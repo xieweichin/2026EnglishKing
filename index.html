@@ -1,0 +1,4146 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f6bff" />
+  <title>114學年度八德國中英語單字王競賽練習系統</title>
+  <style>
+
+:root {
+  --bg-1: #eaf4ff;
+  --bg-2: #fff7ed;
+  --ink: #10233f;
+  --muted: #64748b;
+  --card: #ffffff;
+  --line: #dbe6f3;
+  --primary: #0f6bff;
+  --primary-dark: #0748a8;
+  --a: #ef4444;
+  --b: #2563eb;
+  --c: #16a34a;
+  --d: #9333ea;
+  --good: #16a34a;
+  --warn: #f97316;
+  --danger: #dc2626;
+  --shadow: 0 18px 50px rgba(15, 35, 63, 0.14);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(15, 107, 255, 0.18), transparent 34rem),
+    radial-gradient(circle at bottom right, rgba(249, 115, 22, 0.16), transparent 30rem),
+    linear-gradient(135deg, var(--bg-1), var(--bg-2));
+  overflow-x: hidden;
+}
+button, select, input { font: inherit; }
+button, .mode-card {
+  border: 0;
+  border-radius: 16px;
+  padding: 0.85rem 1.1rem;
+  font-weight: 900;
+  color: #fff;
+  background: var(--primary);
+  box-shadow: 0 8px 18px rgba(15, 107, 255, 0.2);
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease;
+}
+button:hover, .mode-card:hover { transform: translateY(-1px); filter: brightness(1.03); }
+button:active, .mode-card:active { transform: translateY(0); filter: brightness(0.96); }
+button.secondary { color: var(--ink); background: #e2e8f0; box-shadow: none; }
+button.ghost { color: var(--primary-dark); background: rgba(255,255,255,.72); border: 1px solid var(--line); box-shadow: none; }
+button.success { background: var(--good); }
+button.warning { background: var(--warn); }
+.danger-text { color: var(--danger) !important; }
+#app { width: min(1580px, 96vw); min-height: 100vh; margin: 0 auto; padding: 1rem 0 1.4rem; }
+.site-header { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.site-header .back-home { visibility: hidden; }
+body.in-mode .site-header .back-home { visibility: visible; }
+.eyebrow { margin: 0 0 .2rem; color: var(--primary-dark); font-size: .85rem; font-weight: 1000; letter-spacing: .08em; text-transform: uppercase; }
+h1 { margin: 0; color: var(--primary-dark); font-size: clamp(1.45rem, 2.6vw, 3.1rem); line-height: 1.08; text-shadow: 0 2px 0 rgba(255,255,255,.75); }
+.view { display: none; }
+.active-view { display: block; }
+.hero-card { min-height: 560px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, .86fr); gap: 1rem; align-items: stretch; padding: clamp(1rem, 2.2vw, 2rem); background: rgba(255,255,255,.84); border: 1px solid rgba(219,230,243,.9); border-radius: 30px; box-shadow: var(--shadow); backdrop-filter: blur(10px); }
+.hero-copy { display: flex; flex-direction: column; justify-content: center; }
+.pill, #teacherScopeBadge, #studentScopeBadge { display: inline-flex; align-items: center; width: fit-content; min-height: 2rem; padding: .32rem .8rem; color: var(--primary-dark); background: #dbeafe; border-radius: 999px; font-weight: 1000; }
+.hero-copy h2 { margin: .8rem 0 .8rem; font-size: clamp(2.4rem, 5.5vw, 6.2rem); line-height: 1.02; }
+.hero-copy p { margin: 0; color: var(--muted); font-size: clamp(1.05rem, 1.5vw, 1.35rem); font-weight: 700; }
+.hero-stats { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.5rem; }
+.hero-stats span { display: inline-flex; gap: .3rem; align-items: center; padding: .6rem .8rem; background: #f8fafc; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); font-weight: 900; }
+.hero-stats strong { color: var(--primary); font-size: 1.2em; }
+.mode-grid { display: grid; grid-template-rows: 1fr 1fr; gap: 1rem; }
+.mode-card { width: 100%; text-align: left; padding: 1.4rem; display: flex; flex-direction: column; justify-content: center; gap: .45rem; }
+.mode-card span { font-size: clamp(1.55rem, 2.6vw, 2.3rem); }
+.mode-card strong { font-size: clamp(1rem, 1.4vw, 1.25rem); }
+.mode-card small { color: rgba(255,255,255,.82); font-size: .95rem; }
+.teacher-card { background: linear-gradient(135deg, #0f6bff, #0748a8); }
+.student-card { background: linear-gradient(135deg, #16a34a, #047857); }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr .8fr; gap: 1rem; margin-top: 1rem; }
+.info-card { background: rgba(255,255,255,.84); border: 1px solid var(--line); border-radius: 24px; padding: 1rem 1.15rem; box-shadow: 0 12px 34px rgba(15,35,63,.08); }
+.info-card h3 { margin: 0 0 .55rem; color: var(--primary-dark); font-size: 1.35rem; }
+.info-card ol { margin: 0; padding-left: 1.2rem; color: var(--muted); font-weight: 750; line-height: 1.75; }
+.info-card p { margin: 0; color: var(--muted); font-weight: 750; line-height: 1.7; }
+.control-strip { background: rgba(255,255,255,.84); border: 1px solid var(--line); border-radius: 24px; padding: .75rem; display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; margin-bottom: 1rem; box-shadow: 0 12px 34px rgba(15,35,63,.08); }
+.control-strip label, .control-card label { color: var(--muted); font-size: .9rem; font-weight: 1000; display: flex; align-items: center; gap: .5rem; }
+select { min-width: 10rem; border: 1px solid var(--line); border-radius: 14px; padding: .78rem .85rem; color: var(--ink); background: #fff; outline: none; font-weight: 900; }
+.teacher-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(270px, 330px); gap: 1rem; }
+.stage-wrap { min-height: 620px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(190px, .23fr); background: var(--card); border: 1px solid var(--line); border-radius: 30px; overflow: hidden; box-shadow: var(--shadow); }
+.flash-stage, .practice-card { cursor: pointer; padding: clamp(1rem, 2.3vw, 2rem); display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+.status-line { display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); font-weight: 1000; }
+.question-zone { min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: clamp(.65rem, 1.5vw, 1.4rem); }
+.question-zone p { margin: 0; }
+#teacherPromptLabel, #studentPromptLabel { color: var(--muted); font-size: clamp(1rem, 1.8vw, 1.5rem); font-weight: 1000; letter-spacing: .12em; }
+#teacherQuestion, #studentQuestion { width: 100%; margin: 0; color: #111827; font-size: clamp(3.5rem, 9.5vw, 9.2rem); line-height: 1.05; font-weight: 1000; overflow-wrap: anywhere; }
+.answer { width: min(100%, 960px); padding: 1rem 1.25rem; border-radius: 22px; color: var(--primary-dark); background: #eff6ff; border: 1px solid #bfdbfe; font-size: clamp(2rem, 5.2vw, 5rem); line-height: 1.15; font-weight: 1000; overflow-wrap: anywhere; }
+.hidden { display: none !important; }
+.tap-hint { color: var(--muted); font-size: clamp(.85rem, 1.3vw, 1.1rem); font-weight: 800; }
+.timer-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; border-left: 1px solid var(--line); background: linear-gradient(180deg, #f8fafc, #e2e8f0); }
+#countdown { font-size: clamp(5rem, 9vw, 10rem); line-height: .95; font-weight: 1000; color: var(--danger); font-variant-numeric: tabular-nums; }
+.timer-unit { color: var(--muted); font-size: 1.35rem; font-weight: 1000; }
+.time-warning .timer-panel { background: #fff7ed; }
+.time-warning #countdown { color: var(--warn); }
+.time-up .timer-panel { background: #fee2e2; animation: pulseBg .8s ease-in-out infinite alternate; }
+@keyframes pulseBg { from { filter: brightness(1); } to { filter: brightness(.92); } }
+.teacher-side { display: flex; flex-direction: column; gap: 1rem; }
+.scoreboard { display: grid; gap: .8rem; }
+.team { background: rgba(255,255,255,.9); border: 1px solid var(--line); border-radius: 24px; padding: .9rem; box-shadow: 0 12px 34px rgba(15,35,63,.08); }
+.team-name { width: 100%; border: 0; outline: 0; background: transparent; text-align: center; font-weight: 1000; font-size: 1.05rem; color: inherit; }
+.score { text-align: center; font-size: clamp(2.4rem, 4.2vw, 4.1rem); line-height: 1; font-weight: 1000; margin: .25rem 0 .55rem; }
+.team-controls, .quick-actions, .student-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+.team-controls button { padding: .55rem .4rem; box-shadow: none; }
+.minus { background: #f1f5f9; color: var(--ink); }
+.team.team-0 { color: var(--a); } .team.team-1 { color: var(--b); } .team.team-2 { color: var(--c); } .team.team-3 { color: var(--d); }
+.team-0 .plus { background: var(--a); } .team-1 .plus { background: var(--b); } .team-2 .plus { background: var(--c); } .team-3 .plus { background: var(--d); }
+.shortcuts-box, .word-list-box { color: var(--muted); font-weight: 800; background: rgba(255,255,255,.78); border: 1px solid var(--line); border-radius: 18px; padding: .8rem; }
+summary { cursor: pointer; font-weight: 1000; color: var(--primary-dark); }
+.student-shell { display: grid; grid-template-columns: minmax(280px, 350px) minmax(0, 1fr); gap: 1rem; }
+.student-panel { display: flex; flex-direction: column; gap: 1rem; }
+.control-card { background: rgba(255,255,255,.86); border: 1px solid var(--line); border-radius: 24px; padding: 1rem; box-shadow: 0 12px 34px rgba(15,35,63,.08); display: grid; gap: .8rem; }
+.control-card label { align-items: flex-start; flex-direction: column; }
+.control-card select, .control-card button { width: 100%; }
+.practice-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+.practice-stats div { background: rgba(255,255,255,.86); border: 1px solid var(--line); border-radius: 20px; padding: .8rem; text-align: center; box-shadow: 0 12px 34px rgba(15,35,63,.08); }
+.practice-stats strong { display: block; color: var(--primary-dark); font-size: 2rem; line-height: 1; }
+.practice-stats span { color: var(--muted); font-size: .85rem; font-weight: 900; }
+.practice-card { min-height: 660px; background: rgba(255,255,255,.92); border: 1px solid var(--line); border-radius: 30px; box-shadow: var(--shadow); grid-template-rows: auto 1fr auto auto; }
+.student-zone #studentQuestion { font-size: clamp(3.2rem, 10vw, 8.8rem); }
+.student-actions { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 1rem; }
+.word-list { max-height: 360px; overflow: auto; margin-top: .7rem; display: grid; gap: .35rem; }
+.word-row { display: grid; grid-template-columns: 1fr 1.2fr; gap: .5rem; padding: .45rem .55rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; font-size: .9rem; }
+.word-row strong { color: var(--ink); overflow-wrap: anywhere; }
+.word-row span { color: var(--muted); overflow-wrap: anywhere; }
+@media (max-width: 1080px) {
+  .hero-card, .teacher-layout, .student-shell { grid-template-columns: 1fr; }
+  .mode-grid { grid-template-rows: auto auto; }
+  .info-grid { grid-template-columns: 1fr; }
+  .teacher-side { display: grid; grid-template-columns: 1fr; }
+  .scoreboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 780px) {
+  #app { width: min(780px, 94vw); }
+  .site-header { grid-template-columns: 1fr auto; }
+  .site-header .back-home { grid-column: 1 / 2; width: fit-content; }
+  .site-header > div { grid-column: 1 / -1; order: 3; }
+  .stage-wrap { grid-template-columns: 1fr; min-height: 650px; }
+  .timer-panel { min-height: 145px; border-left: 0; border-top: 1px solid var(--line); }
+  .control-strip label { width: 100%; justify-content: space-between; }
+  .control-strip select { flex: 1; min-width: 0; }
+  .student-actions { grid-template-columns: 1fr 1fr; }
+  .hero-card { min-height: auto; }
+}
+@media (max-width: 560px) {
+  h1 { font-size: 1.35rem; }
+  .hero-copy h2 { font-size: 2.6rem; }
+  #teacherQuestion, #studentQuestion { font-size: clamp(2.8rem, 17vw, 5rem); }
+  .answer { font-size: clamp(1.7rem, 11vw, 3.7rem); }
+  .scoreboard { grid-template-columns: 1fr; }
+  .control-strip button, .quick-actions button, .student-actions button { width: 100%; }
+}
+
+</style>
+</head>
+<body>
+  <div id="app">
+    <header class="site-header">
+      <button class="ghost back-home" id="homeButton" type="button">首頁</button>
+      <div>
+        <p class="eyebrow">Bade Junior High School · English Vocabulary King</p>
+        <h1>114學年度八德國中英語單字王競賽練習系統</h1>
+      </div>
+      <button class="ghost" id="fullscreenButton" type="button">全螢幕</button>
+    </header>
+
+    <main id="homeView" class="view active-view">
+      <section class="hero-card">
+        <div class="hero-copy">
+          <p class="pill">線上版為主 · 離線版備援</p>
+          <h2>一套系統，兩種使用情境</h2>
+          <p>老師上課可投影進行分隊搶答；學生也能用手機或平板自主練習、累積錯題。</p>
+          <div class="hero-stats">
+            <span><strong id="totalCount">380</strong> 筆單字與片語</span>
+            <span>支援 1上 / 1下 / Lesson 篩選</span>
+            <span>免登入、可離線開啟</span>
+          </div>
+        </div>
+        <div class="mode-grid">
+          <button class="mode-card teacher-card" id="teacherModeButton" type="button">
+            <span>班級比賽模式</span>
+            <strong>老師投影、全班搶答、隊伍計分</strong>
+            <small>適合大螢幕、活動中心、班級競賽</small>
+          </button>
+          <button class="mode-card student-card" id="studentModeButton" type="button">
+            <span>個人練習模式</span>
+            <strong>學生手機練習、看答案、自評錯題</strong>
+            <small>適合課前暖身、回家複習、比賽前練習</small>
+          </button>
+        </div>
+      </section>
+
+      <section class="info-grid">
+        <article class="info-card">
+          <h3>老師怎麼用</h3>
+          <ol>
+            <li>選擇題庫範圍與出題方向。</li>
+            <li>投影後按「開始比賽」。</li>
+            <li>學生搶答後按空白鍵顯示答案，再幫隊伍加分。</li>
+          </ol>
+        </article>
+        <article class="info-card">
+          <h3>學生怎麼用</h3>
+          <ol>
+            <li>掃 QR Code 或開啟網址。</li>
+            <li>選擇 1上、1下或指定 Lesson。</li>
+            <li>看題目、顯示答案，將不熟的字加入錯題。</li>
+          </ol>
+        </article>
+        <article class="info-card compact-note">
+          <h3>建議發佈</h3>
+          <p>把整個資料夾上傳到 GitHub Pages，產生固定網址；正式比賽時也保留單檔 HTML 備份。</p>
+        </article>
+      </section>
+    </main>
+
+    <main id="teacherView" class="view">
+      <section class="control-strip no-card-click">
+        <label>題庫範圍<select id="teacherScope"></select></label>
+        <label>出題方向
+          <select id="teacherDirection">
+            <option value="en-zh">英文 → 中文</option>
+            <option value="zh-en">中文 → 英文</option>
+            <option value="mixed">中英混合</option>
+          </select>
+        </label>
+        <label>每題秒數
+          <select id="secondsSelect">
+            <option value="10">10 秒</option>
+            <option value="15" selected>15 秒</option>
+            <option value="20">20 秒</option>
+            <option value="30">30 秒</option>
+            <option value="45">45 秒</option>
+            <option value="60">60 秒</option>
+          </select>
+        </label>
+        <label>隊伍數
+          <select id="teamCountSelect">
+            <option value="2" selected>2 隊</option>
+            <option value="3">3 隊</option>
+            <option value="4">4 隊</option>
+          </select>
+        </label>
+        <button id="startContestButton" type="button">開始／重新洗牌</button>
+        <button class="secondary" id="resetScoresButton" type="button">重設分數</button>
+      </section>
+
+      <section class="teacher-layout">
+        <div class="stage-wrap">
+          <section id="teacherStage" class="flash-stage" tabindex="0" aria-label="班級比賽出題區">
+            <div class="status-line">
+              <span id="teacherScopeBadge">全部單字</span>
+              <span id="teacherProgress">第 0 / 0 題</span>
+            </div>
+            <div class="question-zone">
+              <p id="teacherPromptLabel">請選擇開始比賽</p>
+              <h2 id="teacherQuestion">Ready?</h2>
+              <p id="teacherAnswer" class="answer hidden"></p>
+              <p class="tap-hint">點擊題目區或按空白鍵：顯示答案／下一題</p>
+            </div>
+          </section>
+          <aside id="timerPanel" class="timer-panel" aria-label="倒數計時">
+            <div id="countdown">15</div>
+            <div class="timer-unit">秒</div>
+            <audio id="beepSound" src="data:audio/mpeg;base64,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MDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQAAATP9voogupBOYABBg8MmIhkZFMJoZjHK/+Yt4BhG//q+xhjYIaYEgAcGAUgBIOAEEc0rF1tcQ6TuDppOO0eQlEDKgpnJqgTJwpg0mZpUESCk0mGTCqrTNxhESQMQAhOzmpWGKaLC2oseaIjypMfhAFCx9lVDlGlnS5ZG+tvydGuSz/MicU7I//vUxESCFk3fHa5+ZwMHu+Lp/cFwvUscQY4TzOjplUv3QS1qLX61H/zrz/0tvuqn+jv/of63/0MtfXu/3qPhdtbEUAgDCwAIYAKALmAKAFhgFYCmYCcBKGBKgkZgpwWcYpON+HzGFaJjKgD+YMiA0HYH5r5EZoHgI2FhFUYNAUFIZyz1luq+o8ITtr5dVnaagMEGnWxzuylcZTPhMHl1oj5G0UU4DKarSH0R5FDFZLCZ0nJUkFLJoOebWRdbxrruq+SpbU1fkSFPKqq9SZqo2SR50iAhMSCdSqI+ji17Zw1/XPfoOo/3mun652d+kb1n239/Xzr9vXOGPztTofPvJdVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV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h553q5mPS1L+P4lY2XdfOFZb/QIKHVM1NeolFX9SyE/ZImvzGWT3yYU5Wr1njVZR+dL1Rb6jrZdbQds4+ym1lecHCcVzrnbM2pNbDeVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQgfMKDDJSc0JGNvdTuMYwUsF7MKuDpDOMSp82h73/MI0DyDAOgVMwEkCoMAuAYTAGQDYDN0BcwbsGpiXJJlsigo3BZR9rIqpB+yGuX1uNw1502XjX6pVdY+yR1Fh9EbLaSu//vUxDED1eHe/g3+ZMp7O9/Bv8yZRV91cslae/I4S8qqX1EoVlpP6RJjmElr59FK+pzAllba0yj16DlNvllU0pVWL1B+mskKZb9PmStSHKCVaSvMFnB3pr5g5jWzc+icHlQs0YKJmNFRm6aa8/HP7ZgjQM4YSyH2mXwA+59B9z0YzqDtmCxALxgQ4AeEAPgkAfgWwBYYaoBpAiphtY8L0bi93WtYkbeXsfl8xQSx1dSSNYvV8sPnCz19Q+t/llK1LyNFNN29RKHUXW76ykIyQ25ZV/KCPd63LH5kxZftJpJAxVuqYyl6ai7OpK2XrMe6HMn0X8xnSJN5yu7daSikWl1MQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV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VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVLRGEipkRgaGpm3RB3PSYKQDbGFYiFZm8wekeOTxqGLShYJghgGMBz6IGaSAYUeAQCBuuGRAHFBVlp9BEui0hhQ1fpLWLjPdZeSWWBv9I//vUxCcD1U3g9A3+hII+u97Bv9SQ3asaDcybNiErWYntY0tSVqyKp0EPLBIqZr8gQlRWTdXJV0XtzIxE9lXdWRiO3UdPe25f6ssrOH9eVMqW2WcUm2pTkvlbortNemj3N9JLy7OjsZW5xlvR63WcIV0l2wYEGFjpjxsZywmyVRgXIKSYM0GQGQjjwB8sTtGLGyBg1oCgBrobgZlDwGOAaAMPgUCoYXFLCUCZ6nkwHGoedaLlfzVqiF6R96iD9U/keVeYtnScbR8lPflg8p/yZF0h+Ypr/lsck3/d9frPf3NP2c4/aX3Uv0qcx9JFVb+j0utvP61dZ+oiKvTa6XrPNJJMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQwMh3EQoEnTCOjJ8zAMAOIwJEIt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VlWQzBw3Yi8mnqWNP6ylpTwvU4KcxfUdEOjRnSESvSgFhAIphYDKiuBXAjmBDAo40QiEgNQlI2oyo6JDto0JgqmSqqqSjy+2UNfbRvmWsqZ62NrDT1PJ9F4QaIRJKqCqYVCiYnWvRT7JVjJeoCUOye6pGTt4+cmquy5TkuMsUu8FDkKgqNNdTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" preload="auto"></audio>
+          </aside>
+        </div>
+
+        <aside class="teacher-side no-card-click">
+          <section class="scoreboard" id="scoreboard"></section>
+          <section class="quick-actions">
+            <button id="showTeacherAnswerButton" type="button">顯示答案</button>
+            <button id="nextTeacherButton" type="button">下一題</button>
+          </section>
+          <details class="shortcuts-box">
+            <summary>快捷鍵</summary>
+            <p>空白鍵：顯示答案／下一題｜N：下一題｜S：重新洗牌｜1~4：隊伍加分｜Z/X/C/V：隊伍扣分｜F：全螢幕</p>
+          </details>
+        </aside>
+      </section>
+    </main>
+
+    <main id="studentView" class="view">
+      <section class="student-shell">
+        <aside class="student-panel">
+          <div class="control-card">
+            <label>練習範圍<select id="studentScope"></select></label>
+            <label>練習方向
+              <select id="studentDirection">
+                <option value="en-zh">英文 → 中文</option>
+                <option value="zh-en">中文 → 英文</option>
+                <option value="mixed">中英混合</option>
+              </select>
+            </label>
+            <button id="startPracticeButton" type="button">開始練習</button>
+            <button class="secondary" id="wrongOnlyButton" type="button">只練錯題</button>
+            <button class="ghost danger-text" id="clearProgressButton" type="button">清除本機進度</button>
+          </div>
+          <div class="practice-stats">
+            <div><strong id="studentTotal">0</strong><span>本次題庫</span></div>
+            <div><strong id="knownCount">0</strong><span>我會了</span></div>
+            <div><strong id="unsureCount">0</strong><span>錯題</span></div>
+          </div>
+          <details class="word-list-box">
+            <summary>查看目前題庫清單</summary>
+            <div id="wordList" class="word-list"></div>
+          </details>
+        </aside>
+
+        <section class="practice-card" id="studentCard" tabindex="0">
+          <div class="status-line">
+            <span id="studentScopeBadge">全部單字</span>
+            <span id="studentProgress">第 0 / 0 題</span>
+          </div>
+          <div class="question-zone student-zone">
+            <p id="studentPromptLabel">請開始練習</p>
+            <h2 id="studentQuestion">Ready?</h2>
+            <p id="studentAnswer" class="answer hidden"></p>
+          </div>
+          <div class="student-actions">
+            <button id="showStudentAnswerButton" type="button">看答案</button>
+            <button id="knownButton" class="success" type="button">我會了</button>
+            <button id="unsureButton" class="warning" type="button">不熟，加入錯題</button>
+            <button id="nextStudentButton" class="secondary" type="button">跳過</button>
+          </div>
+          <p class="tap-hint mobile-hint">手機點「看答案」，鍵盤可用空白鍵顯示答案、Enter 記為會了、U 加入錯題。</p>
+        </section>
+      </section>
+    </main>
+  </div>
+  <script>
+window.VOCABULARY_DATA = [
+  {
+    "id": 1,
+    "source": "1上",
+    "english": "show",
+    "chinese": "節目",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 2,
+    "source": "1上",
+    "english": "picture",
+    "chinese": "圖畫",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 3,
+    "source": "1上",
+    "english": "goose",
+    "chinese": "鵝（複數為 geese）",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 4,
+    "source": "1上",
+    "english": "point",
+    "chinese": "分數",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 5,
+    "source": "1上",
+    "english": "lion",
+    "chinese": "獅子",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 6,
+    "source": "1上",
+    "english": "monkey",
+    "chinese": "猴子",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 7,
+    "source": "1上",
+    "english": "more",
+    "chinese": "更多的",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 8,
+    "source": "1上",
+    "english": "winner",
+    "chinese": "贏家",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 9,
+    "source": "1上",
+    "english": "bee",
+    "chinese": "蜜蜂",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 10,
+    "source": "1上",
+    "english": "frog",
+    "chinese": "青蛙",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 11,
+    "source": "1上",
+    "english": "zebra",
+    "chinese": "斑馬",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 12,
+    "source": "1上",
+    "english": "birthday",
+    "chinese": "生日",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 13,
+    "source": "1上",
+    "english": "elephant",
+    "chinese": "大象",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 14,
+    "source": "1上",
+    "english": "mouse",
+    "chinese": "老鼠（複數為 mice）",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 15,
+    "source": "1上",
+    "english": "ant",
+    "chinese": "螞蟻",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 16,
+    "source": "1上",
+    "english": "sheep",
+    "chinese": "綿羊",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 17,
+    "source": "1上",
+    "english": "goat",
+    "chinese": "山羊",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 18,
+    "source": "1上",
+    "english": "angry",
+    "chinese": "生氣的",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 19,
+    "source": "1上",
+    "english": "young",
+    "chinese": "年輕的",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 20,
+    "source": "1上",
+    "english": "clean",
+    "chinese": "乾淨的",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 21,
+    "source": "1上",
+    "english": "dirty",
+    "chinese": "髒的",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 22,
+    "source": "1上",
+    "english": "hippo",
+    "chinese": "河馬",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 23,
+    "source": "1上",
+    "english": "strong",
+    "chinese": "強壯的",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 24,
+    "source": "1上",
+    "english": "brown",
+    "chinese": "棕色的",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 25,
+    "source": "1上",
+    "english": "but",
+    "chinese": "但是",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 26,
+    "source": "1上",
+    "english": "bear",
+    "chinese": "熊",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 27,
+    "source": "1上",
+    "english": "fruit",
+    "chinese": "水果",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 28,
+    "source": "1上",
+    "english": "favorite",
+    "chinese": "最喜愛的",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 29,
+    "source": "1上",
+    "english": "hairy",
+    "chinese": "毛茸茸的",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 30,
+    "source": "1上",
+    "english": "forest",
+    "chinese": "森林",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 31,
+    "source": "1上",
+    "english": "footprint",
+    "chinese": "腳印",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 32,
+    "source": "1上",
+    "english": "You are a smart cookie!",
+    "chinese": "你真是冰雪聰明！",
+    "semester": "1上",
+    "lesson": 1,
+    "deckLabel": "1上 Lesson 1"
+  },
+  {
+    "id": 33,
+    "source": "1上",
+    "english": "postcard",
+    "chinese": "明信片",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 34,
+    "source": "1上",
+    "english": "the USA",
+    "chinese": "美國（= the U.S.A.）",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 35,
+    "source": "1上",
+    "english": "year(s) old",
+    "chinese": "歲",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 36,
+    "source": "1上",
+    "english": "famous",
+    "chinese": "有名的",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 37,
+    "source": "1上",
+    "english": "beautiful",
+    "chinese": "漂亮的",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 38,
+    "source": "1上",
+    "english": "all over the world",
+    "chinese": "世界各地",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 39,
+    "source": "1上",
+    "english": "hard",
+    "chinese": "困難的",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 40,
+    "source": "1上",
+    "english": "easy",
+    "chinese": "簡單的",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 41,
+    "source": "1上",
+    "english": "late",
+    "chinese": "遲的",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 42,
+    "source": "1上",
+    "english": "tomorrow",
+    "chinese": "（在）明天",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 43,
+    "source": "1上",
+    "english": "family",
+    "chinese": "家庭",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 44,
+    "source": "1上",
+    "english": "farmer",
+    "chinese": "農夫",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 45,
+    "source": "1上",
+    "english": "housewife",
+    "chinese": "家庭主婦",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 46,
+    "source": "1上",
+    "english": "clerk",
+    "chinese": "職員",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 47,
+    "source": "1上",
+    "english": "actress",
+    "chinese": "女演員",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 48,
+    "source": "1上",
+    "english": "son",
+    "chinese": "兒子",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 49,
+    "source": "1上",
+    "english": "daughter",
+    "chinese": "女兒",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 50,
+    "source": "1上",
+    "english": "husband",
+    "chinese": "丈夫",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 51,
+    "source": "1上",
+    "english": "wife",
+    "chinese": "妻子",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 52,
+    "source": "1上",
+    "english": "junior high school",
+    "chinese": "國中",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 53,
+    "source": "1上",
+    "english": "star",
+    "chinese": "明星",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 54,
+    "source": "1上",
+    "english": "still",
+    "chinese": "還，仍然",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 55,
+    "source": "1上",
+    "english": "cute",
+    "chinese": "可愛的",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 56,
+    "source": "1上",
+    "english": "wonderful",
+    "chinese": "絕妙的，極好的",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 57,
+    "source": "1上",
+    "english": "place",
+    "chinese": "地方",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 58,
+    "source": "1上",
+    "english": "theme park",
+    "chinese": "主題樂園",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 59,
+    "source": "1上",
+    "english": "founder",
+    "chinese": "創辦者",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 60,
+    "source": "1上",
+    "english": "cartoon",
+    "chinese": "卡通",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 61,
+    "source": "1上",
+    "english": "father",
+    "chinese": "創始者",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 62,
+    "source": "1上",
+    "english": "have a great time",
+    "chinese": "玩得開心",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 63,
+    "source": "1上",
+    "english": "It’s a piece of cake.",
+    "chinese": "非常簡單。",
+    "semester": "1上",
+    "lesson": 2,
+    "deckLabel": "1上 Lesson 2"
+  },
+  {
+    "id": 64,
+    "source": "1上",
+    "english": "please",
+    "chinese": "請",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 65,
+    "source": "1上",
+    "english": "put",
+    "chinese": "放",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 66,
+    "source": "1上",
+    "english": "dish",
+    "chinese": "菜餚",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 67,
+    "source": "1上",
+    "english": "let’s ...",
+    "chinese": "讓我們……",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 68,
+    "source": "1上",
+    "english": "try",
+    "chinese": "嘗試",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 69,
+    "source": "1上",
+    "english": "beef noodles",
+    "chinese": "牛肉麵",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 70,
+    "source": "1上",
+    "english": "use",
+    "chinese": "使用",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 71,
+    "source": "1上",
+    "english": "chopsticks",
+    "chinese": "筷子",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 72,
+    "source": "1上",
+    "english": "delicious",
+    "chinese": "美味的",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 73,
+    "source": "1上",
+    "english": "guys",
+    "chinese": "大家",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 74,
+    "source": "1上",
+    "english": "just",
+    "chinese": "就，只是",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 75,
+    "source": "1上",
+    "english": "hand",
+    "chinese": "手",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 76,
+    "source": "1上",
+    "english": "bring",
+    "chinese": "帶",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 77,
+    "source": "1上",
+    "english": "talk",
+    "chinese": "說話",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 78,
+    "source": "1上",
+    "english": "party",
+    "chinese": "派對",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 79,
+    "source": "1上",
+    "english": "invite",
+    "chinese": "邀請",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 80,
+    "source": "1上",
+    "english": "join",
+    "chinese": "參加",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 81,
+    "source": "1上",
+    "english": "glass",
+    "chinese": "玻璃杯",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 82,
+    "source": "1上",
+    "english": "bowl",
+    "chinese": "碗",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 83,
+    "source": "1上",
+    "english": "spoon",
+    "chinese": "湯匙",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 84,
+    "source": "1上",
+    "english": "menu",
+    "chinese": "菜單",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 85,
+    "source": "1上",
+    "english": "fork",
+    "chinese": "叉子",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 86,
+    "source": "1上",
+    "english": "plate",
+    "chinese": "盤子",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 87,
+    "source": "1上",
+    "english": "knife",
+    "chinese": "刀子（複數為 knives）",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 88,
+    "source": "1上",
+    "english": "e-mail",
+    "chinese": "電子郵件（= email）",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 89,
+    "source": "1上",
+    "english": "everyone",
+    "chinese": "每個人",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 90,
+    "source": "1上",
+    "english": "house",
+    "chinese": "房子",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 91,
+    "source": "1上",
+    "english": "wear",
+    "chinese": "穿",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 92,
+    "source": "1上",
+    "english": "something",
+    "chinese": "某樣東西",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 93,
+    "source": "1上",
+    "english": "country",
+    "chinese": "國家",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 94,
+    "source": "1上",
+    "english": "any",
+    "chinese": "任何的",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 95,
+    "source": "1上",
+    "english": "fun",
+    "chinese": "樂趣",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 96,
+    "source": "1上",
+    "english": "Halloween",
+    "chinese": "萬聖節前夕",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 97,
+    "source": "1上",
+    "english": "around the corner",
+    "chinese": "即將到來",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 98,
+    "source": "1上",
+    "english": "plan",
+    "chinese": "計畫",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 99,
+    "source": "1上",
+    "english": "Just give it a shot!",
+    "chinese": "試試看吧！",
+    "semester": "1上",
+    "lesson": 3,
+    "deckLabel": "1上 Lesson 3"
+  },
+  {
+    "id": 100,
+    "source": "1上",
+    "english": "animal",
+    "chinese": "動物",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 101,
+    "source": "1上",
+    "english": "surprise",
+    "chinese": "驚喜",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 102,
+    "source": "1上",
+    "english": "love",
+    "chinese": "愛",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 103,
+    "source": "1上",
+    "english": "gift",
+    "chinese": "禮物",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 104,
+    "source": "1上",
+    "english": "hunt",
+    "chinese": "尋找",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 105,
+    "source": "1上",
+    "english": "inside",
+    "chinese": "在……裡面",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 106,
+    "source": "1上",
+    "english": "lunch",
+    "chinese": "午餐",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 107,
+    "source": "1上",
+    "english": "again",
+    "chinese": "再一次",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 108,
+    "source": "1上",
+    "english": "pin",
+    "chinese": "別針",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 109,
+    "source": "1上",
+    "english": "so",
+    "chinese": "非常地",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 110,
+    "source": "1上",
+    "english": "kind",
+    "chinese": "體貼的",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 111,
+    "source": "1上",
+    "english": "jacket",
+    "chinese": "夾克",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 112,
+    "source": "1上",
+    "english": "bamboo",
+    "chinese": "竹子",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 113,
+    "source": "1上",
+    "english": "Thanksgiving",
+    "chinese": "感恩節",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 114,
+    "source": "1上",
+    "english": "bathroom",
+    "chinese": "浴室",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 115,
+    "source": "1上",
+    "english": "bedroom",
+    "chinese": "臥室",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 116,
+    "source": "1上",
+    "english": "living room",
+    "chinese": "客廳",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 117,
+    "source": "1上",
+    "english": "window",
+    "chinese": "窗戶",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 118,
+    "source": "1上",
+    "english": "sofa",
+    "chinese": "長沙發",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 119,
+    "source": "1上",
+    "english": "dining room",
+    "chinese": "飯廳",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 120,
+    "source": "1上",
+    "english": "kitchen",
+    "chinese": "廚房",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 121,
+    "source": "1上",
+    "english": "swimming pool",
+    "chinese": "游泳池",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 122,
+    "source": "1上",
+    "english": "garden",
+    "chinese": "花園",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 123,
+    "source": "1上",
+    "english": "behind",
+    "chinese": "在……後面",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 124,
+    "source": "1上",
+    "english": "in front of",
+    "chinese": "在……前面",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 125,
+    "source": "1上",
+    "english": "between",
+    "chinese": "在……之間",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 126,
+    "source": "1上",
+    "english": "garage",
+    "chinese": "車庫",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 127,
+    "source": "1上",
+    "english": "next to",
+    "chinese": "在……旁邊",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 128,
+    "source": "1上",
+    "english": "team",
+    "chinese": "（團）隊",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 129,
+    "source": "1上",
+    "english": "hard-working",
+    "chinese": "認真的",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 130,
+    "source": "1上",
+    "english": "smart",
+    "chinese": "聰明的",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 131,
+    "source": "1上",
+    "english": "area",
+    "chinese": "區域",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 132,
+    "source": "1上",
+    "english": "pocket",
+    "chinese": "口袋",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 133,
+    "source": "1上",
+    "english": "spider",
+    "chinese": "蜘蛛",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 134,
+    "source": "1上",
+    "english": "busy",
+    "chinese": "忙碌的",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 135,
+    "source": "1上",
+    "english": "water",
+    "chinese": "水",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 136,
+    "source": "1上",
+    "english": "bottle",
+    "chinese": "瓶子",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 137,
+    "source": "1上",
+    "english": "near",
+    "chinese": "在……附近",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 138,
+    "source": "1上",
+    "english": "shoulder",
+    "chinese": "肩膀",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 139,
+    "source": "1上",
+    "english": "player",
+    "chinese": "運動員",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 140,
+    "source": "1上",
+    "english": "cheer",
+    "chinese": "歡呼；鼓舞",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 141,
+    "source": "1上",
+    "english": "panda",
+    "chinese": "熊貓",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 142,
+    "source": "1上",
+    "english": "Let’s get the ball rolling!",
+    "chinese": "讓我們開始吧！",
+    "semester": "1上",
+    "lesson": 4,
+    "deckLabel": "1上 Lesson 4"
+  },
+  {
+    "id": 143,
+    "source": "1上",
+    "english": "night market",
+    "chinese": "夜市",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 144,
+    "source": "1上",
+    "english": "video call",
+    "chinese": "視訊電話",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 145,
+    "source": "1上",
+    "english": "breakfast",
+    "chinese": "早餐",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 146,
+    "source": "1上",
+    "english": "aunt",
+    "chinese": "阿姨，舅媽，姑姑，伯母",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 147,
+    "source": "1上",
+    "english": "many",
+    "chinese": "許多的",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 148,
+    "source": "1上",
+    "english": "people",
+    "chinese": "人們",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 149,
+    "source": "1上",
+    "english": "kid",
+    "chinese": "小孩",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 150,
+    "source": "1上",
+    "english": "snack",
+    "chinese": "小吃",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 151,
+    "source": "1上",
+    "english": "enjoy",
+    "chinese": "享受",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 152,
+    "source": "1上",
+    "english": "show ... around",
+    "chinese": "帶……參觀",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 153,
+    "source": "1上",
+    "english": "grass",
+    "chinese": "草地",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 154,
+    "source": "1上",
+    "english": "line up",
+    "chinese": "排隊",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 155,
+    "source": "1上",
+    "english": "picnic",
+    "chinese": "野餐",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 156,
+    "source": "1上",
+    "english": "feed",
+    "chinese": "餵食",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 157,
+    "source": "1上",
+    "english": "take pictures",
+    "chinese": "拍照",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 158,
+    "source": "1上",
+    "english": "camera",
+    "chinese": "照相機",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 159,
+    "source": "1上",
+    "english": "paint",
+    "chinese": "畫畫",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 160,
+    "source": "1上",
+    "english": "puppy",
+    "chinese": "幼犬",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 161,
+    "source": "1上",
+    "english": "museum",
+    "chinese": "博物館",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 162,
+    "source": "1上",
+    "english": "sunny",
+    "chinese": "晴天的",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 163,
+    "source": "1上",
+    "english": "shop",
+    "chinese": "商店",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 164,
+    "source": "1上",
+    "english": "restaurant",
+    "chinese": "餐廳",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 165,
+    "source": "1上",
+    "english": "ticket",
+    "chinese": "票",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 166,
+    "source": "1上",
+    "english": "outside",
+    "chinese": "在……外面",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 167,
+    "source": "1上",
+    "english": "bridge",
+    "chinese": "橋",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 168,
+    "source": "1上",
+    "english": "also",
+    "chinese": "也",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 169,
+    "source": "1上",
+    "english": "art",
+    "chinese": "藝術",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 170,
+    "source": "1上",
+    "english": "joy",
+    "chinese": "喜悅",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 171,
+    "source": "1上",
+    "english": "showroom",
+    "chinese": "展示廳",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 172,
+    "source": "1上",
+    "english": "artwork",
+    "chinese": "藝術品",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 173,
+    "source": "1上",
+    "english": "selfie",
+    "chinese": "自拍照",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 174,
+    "source": "1上",
+    "english": "meadow",
+    "chinese": "草坪",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 175,
+    "source": "1上",
+    "english": "take a bite",
+    "chinese": "咬一口",
+    "semester": "1上",
+    "lesson": 5,
+    "deckLabel": "1上 Lesson 5"
+  },
+  {
+    "id": 176,
+    "source": "1上",
+    "english": "attack",
+    "chinese": "攻擊",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 177,
+    "source": "1上",
+    "english": "Earth",
+    "chinese": "地球",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 178,
+    "source": "1上",
+    "english": "member",
+    "chinese": "成員",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 179,
+    "source": "1上",
+    "english": "move",
+    "chinese": "移動",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 180,
+    "source": "1上",
+    "english": "anything",
+    "chinese": "任何事情",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 181,
+    "source": "1上",
+    "english": "mountain",
+    "chinese": "山",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 182,
+    "source": "1上",
+    "english": "fast",
+    "chinese": "快速地",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 183,
+    "source": "1上",
+    "english": "queen",
+    "chinese": "皇后",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 184,
+    "source": "1上",
+    "english": "even",
+    "chinese": "甚至",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 185,
+    "source": "1上",
+    "english": "No problem!",
+    "chinese": "沒問題！",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 186,
+    "source": "1上",
+    "english": "save",
+    "chinese": "拯救",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 187,
+    "source": "1上",
+    "english": "danger",
+    "chinese": "危險",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 188,
+    "source": "1上",
+    "english": "flash",
+    "chinese": "閃光",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 189,
+    "source": "1上",
+    "english": "freeze",
+    "chinese": "結冰",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 190,
+    "source": "1上",
+    "english": "ocean",
+    "chinese": "海洋",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 191,
+    "source": "1上",
+    "english": "sun",
+    "chinese": "太陽",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 192,
+    "source": "1上",
+    "english": "river",
+    "chinese": "河流",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 193,
+    "source": "1上",
+    "english": "lake",
+    "chinese": "湖泊",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 194,
+    "source": "1上",
+    "english": "rainbow",
+    "chinese": "彩虹",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 195,
+    "source": "1上",
+    "english": "island",
+    "chinese": "島嶼",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 196,
+    "source": "1上",
+    "english": "sea",
+    "chinese": "海洋",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 197,
+    "source": "1上",
+    "english": "moon",
+    "chinese": "月亮",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 198,
+    "source": "1上",
+    "english": "star",
+    "chinese": "星星",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 199,
+    "source": "1上",
+    "english": "dear",
+    "chinese": "親愛的（信頭稱謂）",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 200,
+    "source": "1上",
+    "english": "trouble",
+    "chinese": "麻煩",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 201,
+    "source": "1上",
+    "english": "ice",
+    "chinese": "冰",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 202,
+    "source": "1上",
+    "english": "level",
+    "chinese": "平面",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 203,
+    "source": "1上",
+    "english": "rise",
+    "chinese": "上升",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 204,
+    "source": "1上",
+    "english": "lose",
+    "chinese": "失去",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 205,
+    "source": "1上",
+    "english": "safe",
+    "chinese": "安全的",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 206,
+    "source": "1上",
+    "english": "tell",
+    "chinese": "告訴",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 207,
+    "source": "1上",
+    "english": "super",
+    "chinese": "超級的",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 208,
+    "source": "1上",
+    "english": "melt",
+    "chinese": "融化",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 209,
+    "source": "1上",
+    "english": "speaker",
+    "chinese": "演說家",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 210,
+    "source": "1上",
+    "english": "No sweat!",
+    "chinese": "小事一樁！",
+    "semester": "1上",
+    "lesson": 6,
+    "deckLabel": "1上 Lesson 6"
+  },
+  {
+    "id": 211,
+    "source": "1下",
+    "english": "Tuesday",
+    "chinese": "星期二（= Tue.）",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 212,
+    "source": "1下",
+    "english": "meat-free",
+    "chinese": "無肉的；素食的",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 213,
+    "source": "1下",
+    "english": "Monday",
+    "chinese": "星期一（= Mon.）",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 214,
+    "source": "1下",
+    "english": "vegetable",
+    "chinese": "蔬菜",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 215,
+    "source": "1下",
+    "english": "throw away",
+    "chinese": "丟掉",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 216,
+    "source": "1下",
+    "english": "almost",
+    "chinese": "幾乎",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 217,
+    "source": "1下",
+    "english": "every",
+    "chinese": "每一",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 218,
+    "source": "1下",
+    "english": "a lot of",
+    "chinese": "很多的（= lots of）",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 219,
+    "source": "1下",
+    "english": "enough",
+    "chinese": "足夠的",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 220,
+    "source": "1下",
+    "english": "know",
+    "chinese": "知道",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 221,
+    "source": "1下",
+    "english": "letter",
+    "chinese": "信件",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 222,
+    "source": "1下",
+    "english": "waste",
+    "chinese": "浪費",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 223,
+    "source": "1下",
+    "english": "principal",
+    "chinese": "校長",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 224,
+    "source": "1下",
+    "english": "time",
+    "chinese": "次數",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 225,
+    "source": "1下",
+    "english": "week",
+    "chinese": "星期；週",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 226,
+    "source": "1下",
+    "english": "Wednesday",
+    "chinese": "星期三（= Wed.）",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 227,
+    "source": "1下",
+    "english": "Thursday",
+    "chinese": "星期四（= Thu.）",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 228,
+    "source": "1下",
+    "english": "Friday",
+    "chinese": "星期五（= Fri.）",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 229,
+    "source": "1下",
+    "english": "weekend",
+    "chinese": "週末",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 230,
+    "source": "1下",
+    "english": "Saturday",
+    "chinese": "星期六（= Sat.）",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 231,
+    "source": "1下",
+    "english": "Sunday",
+    "chinese": "星期日（= Sun.）",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 232,
+    "source": "1下",
+    "english": "Taiwan",
+    "chinese": "臺灣",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 233,
+    "source": "1下",
+    "english": "thousand",
+    "chinese": "千",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 234,
+    "source": "1下",
+    "english": "same",
+    "chinese": "相同的",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 235,
+    "source": "1下",
+    "english": "hundred",
+    "chinese": "百",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 236,
+    "source": "1下",
+    "english": "million",
+    "chinese": "百萬",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 237,
+    "source": "1下",
+    "english": "hungry",
+    "chinese": "餓的",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 238,
+    "source": "1下",
+    "english": "fight",
+    "chinese": "對抗；打擊",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 239,
+    "source": "1下",
+    "english": "hour",
+    "chinese": "小時",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 240,
+    "source": "1下",
+    "english": "only",
+    "chinese": "只有",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 241,
+    "source": "1下",
+    "english": "give",
+    "chinese": "給予",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 242,
+    "source": "1下",
+    "english": "money",
+    "chinese": "錢",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 243,
+    "source": "1下",
+    "english": "or",
+    "chinese": "或者",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 244,
+    "source": "1下",
+    "english": "ton",
+    "chinese": "噸",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 245,
+    "source": "1下",
+    "english": "hunger",
+    "chinese": "飢餓",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 246,
+    "source": "1下",
+    "english": "charity",
+    "chinese": "慈善機構",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 247,
+    "source": "1下",
+    "english": "event",
+    "chinese": "活動；事件",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 248,
+    "source": "1下",
+    "english": "over",
+    "chinese": "超過",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 249,
+    "source": "1下",
+    "english": "Once in a blue moon.",
+    "chinese": "少有地；極難得地。",
+    "semester": "1下",
+    "lesson": 1,
+    "deckLabel": "1下 Lesson 1"
+  },
+  {
+    "id": 250,
+    "source": "1下",
+    "english": "rain",
+    "chinese": "下雨",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 251,
+    "source": "1下",
+    "english": "weather",
+    "chinese": "天氣",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 252,
+    "source": "1下",
+    "english": "visit",
+    "chinese": "拜訪；參觀",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 253,
+    "source": "1下",
+    "english": "robot",
+    "chinese": "機器人",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 254,
+    "source": "1下",
+    "english": "hotel",
+    "chinese": "飯店；旅館",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 255,
+    "source": "1下",
+    "english": "face",
+    "chinese": "臉",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 256,
+    "source": "1下",
+    "english": "check (...) in",
+    "chinese": "（替……）辦理入住登記",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 257,
+    "source": "1下",
+    "english": "then",
+    "chinese": "然後",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 258,
+    "source": "1下",
+    "english": "different",
+    "chinese": "不同的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 259,
+    "source": "1下",
+    "english": "carry",
+    "chinese": "提；攜帶；運送",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 260,
+    "source": "1下",
+    "english": "speak",
+    "chinese": "講；說話",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 261,
+    "source": "1下",
+    "english": "language",
+    "chinese": "語言",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 262,
+    "source": "1下",
+    "english": "song",
+    "chinese": "歌曲",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 263,
+    "source": "1下",
+    "english": "else",
+    "chinese": "其他的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 264,
+    "source": "1下",
+    "english": "scan",
+    "chinese": "掃描",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 265,
+    "source": "1下",
+    "english": "book",
+    "chinese": "預訂",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 266,
+    "source": "1下",
+    "english": "check it out",
+    "chinese": "一探究竟",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 267,
+    "source": "1下",
+    "english": "snow",
+    "chinese": "下雪；雪",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 268,
+    "source": "1下",
+    "english": "snowy",
+    "chinese": "下雪的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 269,
+    "source": "1下",
+    "english": "rainy",
+    "chinese": "多雨的；雨天的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 270,
+    "source": "1下",
+    "english": "cloud",
+    "chinese": "雲",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 271,
+    "source": "1下",
+    "english": "cloudy",
+    "chinese": "多雲的；陰天的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 272,
+    "source": "1下",
+    "english": "wind",
+    "chinese": "風",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 273,
+    "source": "1下",
+    "english": "windy",
+    "chinese": "風大的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 274,
+    "source": "1下",
+    "english": "season",
+    "chinese": "季節",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 275,
+    "source": "1下",
+    "english": "spring",
+    "chinese": "春季",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 276,
+    "source": "1下",
+    "english": "summer",
+    "chinese": "夏季",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 277,
+    "source": "1下",
+    "english": "fall",
+    "chinese": "秋季（= autumn）",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 278,
+    "source": "1下",
+    "english": "winter",
+    "chinese": "冬季",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 279,
+    "source": "1下",
+    "english": "warm",
+    "chinese": "溫暖的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 280,
+    "source": "1下",
+    "english": "cold",
+    "chinese": "寒冷的；冰冷的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 281,
+    "source": "1下",
+    "english": "rain",
+    "chinese": "雨",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 282,
+    "source": "1下",
+    "english": "trip",
+    "chinese": "旅行",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 283,
+    "source": "1下",
+    "english": "special",
+    "chinese": "特別的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 284,
+    "source": "1下",
+    "english": "build",
+    "chinese": "建造",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 285,
+    "source": "1下",
+    "english": "taste",
+    "chinese": "體驗；味道",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 286,
+    "source": "1下",
+    "english": "everything",
+    "chinese": "一切",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 287,
+    "source": "1下",
+    "english": "salt",
+    "chinese": "鹽",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 288,
+    "source": "1下",
+    "english": "dry",
+    "chinese": "乾燥的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 289,
+    "source": "1下",
+    "english": "fall down",
+    "chinese": "倒塌；摔下",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 290,
+    "source": "1下",
+    "english": "find out",
+    "chinese": "找出；查明；發現",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 291,
+    "source": "1下",
+    "english": "gone",
+    "chinese": "消失的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 292,
+    "source": "1下",
+    "english": "style",
+    "chinese": "風格；類型",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 293,
+    "source": "1下",
+    "english": "salty",
+    "chinese": "鹹的",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 294,
+    "source": "1下",
+    "english": "look for",
+    "chinese": "尋找",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 295,
+    "source": "1下",
+    "english": "key",
+    "chinese": "關鍵",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 296,
+    "source": "1下",
+    "english": "You bet.",
+    "chinese": "當然。",
+    "semester": "1下",
+    "lesson": 2,
+    "deckLabel": "1下 Lesson 2"
+  },
+  {
+    "id": 297,
+    "source": "1下",
+    "english": "excuse me",
+    "chinese": "抱歉；打擾",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 298,
+    "source": "1下",
+    "english": "second",
+    "chinese": "第二的",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 299,
+    "source": "1下",
+    "english": "third",
+    "chinese": "第三的",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 300,
+    "source": "1下",
+    "english": "March",
+    "chinese": "三月（= Mar.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 301,
+    "source": "1下",
+    "english": "holiday",
+    "chinese": "假期；節日",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 302,
+    "source": "1下",
+    "english": "street",
+    "chinese": "街道（= St.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 303,
+    "source": "1下",
+    "english": "festival",
+    "chinese": "節日；節慶",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 304,
+    "source": "1下",
+    "english": "when",
+    "chinese": "何時",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 305,
+    "source": "1下",
+    "english": "full",
+    "chinese": "完整的",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 306,
+    "source": "1下",
+    "english": "date",
+    "chinese": "日期",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 307,
+    "source": "1下",
+    "english": "colorful",
+    "chinese": "繽紛的",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 308,
+    "source": "1下",
+    "english": "powder",
+    "chinese": "粉末",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 309,
+    "source": "1下",
+    "english": "take ... off",
+    "chinese": "休假",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 310,
+    "source": "1下",
+    "english": "call",
+    "chinese": "稱……為",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 311,
+    "source": "1下",
+    "english": "I get it.",
+    "chinese": "我懂了。",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 312,
+    "source": "1下",
+    "english": "month",
+    "chinese": "月",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 313,
+    "source": "1下",
+    "english": "January",
+    "chinese": "一月（= Jan.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 314,
+    "source": "1下",
+    "english": "February",
+    "chinese": "二月（= Feb.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 315,
+    "source": "1下",
+    "english": "April",
+    "chinese": "四月（= Apr.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 316,
+    "source": "1下",
+    "english": "May",
+    "chinese": "五月",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 317,
+    "source": "1下",
+    "english": "June",
+    "chinese": "六月（= Jun.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 318,
+    "source": "1下",
+    "english": "July",
+    "chinese": "七月（= Jul.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 319,
+    "source": "1下",
+    "english": "August",
+    "chinese": "八月（= Aug.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 320,
+    "source": "1下",
+    "english": "September",
+    "chinese": "九月（= Sep.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 321,
+    "source": "1下",
+    "english": "October",
+    "chinese": "十月（= Oct.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 322,
+    "source": "1下",
+    "english": "November",
+    "chinese": "十一月（= Nov.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 323,
+    "source": "1下",
+    "english": "December",
+    "chinese": "十二月（= Dec.）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 324,
+    "source": "1下",
+    "english": "celebrate",
+    "chinese": "慶祝",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 325,
+    "source": "1下",
+    "english": "for example",
+    "chinese": "例如",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 326,
+    "source": "1下",
+    "english": "each other",
+    "chinese": "彼此；互相",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 327,
+    "source": "1下",
+    "english": "large",
+    "chinese": "大的",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 328,
+    "source": "1下",
+    "english": "1st",
+    "chinese": "第一的（= first）",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 329,
+    "source": "1下",
+    "english": "knock",
+    "chinese": "敲",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 330,
+    "source": "1下",
+    "english": "wish",
+    "chinese": "祝；希望",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 331,
+    "source": "1下",
+    "english": "wash",
+    "chinese": "清洗",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 332,
+    "source": "1下",
+    "english": "thing",
+    "chinese": "事物；東西",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 333,
+    "source": "1下",
+    "english": "in common",
+    "chinese": "共同",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 334,
+    "source": "1下",
+    "english": "mark",
+    "chinese": "標示",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 335,
+    "source": "1下",
+    "english": "start",
+    "chinese": "開始",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 336,
+    "source": "1下",
+    "english": "costume",
+    "chinese": "化裝服",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 337,
+    "source": "1下",
+    "english": "luck",
+    "chinese": "運氣",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 338,
+    "source": "1下",
+    "english": "celebration",
+    "chinese": "慶祝活動",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 339,
+    "source": "1下",
+    "english": "other",
+    "chinese": "其他的",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 340,
+    "source": "1下",
+    "english": "All is well.",
+    "chinese": "一切都好；一切安好。",
+    "semester": "1下",
+    "lesson": 3,
+    "deckLabel": "1下 Lesson 3"
+  },
+  {
+    "id": 341,
+    "source": "1下",
+    "english": "make",
+    "chinese": "製作",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 342,
+    "source": "1下",
+    "english": "paper",
+    "chinese": "紙",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 343,
+    "source": "1下",
+    "english": "which",
+    "chinese": "哪一個",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 344,
+    "source": "1下",
+    "english": "choice",
+    "chinese": "選擇",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 345,
+    "source": "1下",
+    "english": "walk",
+    "chinese": "走路",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 346,
+    "source": "1下",
+    "english": "collect",
+    "chinese": "收集",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 347,
+    "source": "1下",
+    "english": "much",
+    "chinese": "很多的",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 348,
+    "source": "1下",
+    "english": "need",
+    "chinese": "需要",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 349,
+    "source": "1下",
+    "english": "half",
+    "chinese": "一半",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 350,
+    "source": "1下",
+    "english": "piece",
+    "chinese": "張；片",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 351,
+    "source": "1下",
+    "english": "boil",
+    "chinese": "烹煮；煮沸",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 352,
+    "source": "1下",
+    "english": "after",
+    "chinese": "在……之後",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 353,
+    "source": "1下",
+    "english": "screen",
+    "chinese": "篩子；螢幕",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 354,
+    "source": "1下",
+    "english": "work",
+    "chinese": "工作",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 355,
+    "source": "1下",
+    "english": "tour guide",
+    "chinese": "導遊",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 356,
+    "source": "1下",
+    "english": "poop",
+    "chinese": "糞便",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 357,
+    "source": "1下",
+    "english": "bucket",
+    "chinese": "桶",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 358,
+    "source": "1下",
+    "english": "get",
+    "chinese": "拿取；獲得",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 359,
+    "source": "1下",
+    "english": "pumpkin pie",
+    "chinese": "南瓜派",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 360,
+    "source": "1下",
+    "english": "fried chicken",
+    "chinese": "炸雞",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 361,
+    "source": "1下",
+    "english": "coffee",
+    "chinese": "咖啡",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 362,
+    "source": "1下",
+    "english": "juice",
+    "chinese": "果汁",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 363,
+    "source": "1下",
+    "english": "rice",
+    "chinese": "米飯",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 364,
+    "source": "1下",
+    "english": "pork",
+    "chinese": "豬肉",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 365,
+    "source": "1下",
+    "english": "dozen",
+    "chinese": "十二個；一打",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 366,
+    "source": "1下",
+    "english": "bread",
+    "chinese": "麵包",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 367,
+    "source": "1下",
+    "english": "slice",
+    "chinese": "片",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 368,
+    "source": "1下",
+    "english": "useful",
+    "chinese": "有用的",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 369,
+    "source": "1下",
+    "english": "mean",
+    "chinese": "意思是；對……有意義",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 370,
+    "source": "1下",
+    "english": "power",
+    "chinese": "動力",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 371,
+    "source": "1下",
+    "english": "garbage",
+    "chinese": "垃圾；廢物",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 372,
+    "source": "1下",
+    "english": "in other words",
+    "chinese": "換句話說",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 373,
+    "source": "1下",
+    "english": "gas",
+    "chinese": "氣體燃料；汽油",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 374,
+    "source": "1下",
+    "english": "believe",
+    "chinese": "相信",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 375,
+    "source": "1下",
+    "english": "human",
+    "chinese": "人類的",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 376,
+    "source": "1下",
+    "english": "kilometer",
+    "chinese": "公里",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 377,
+    "source": "1下",
+    "english": "tank",
+    "chinese": "槽",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 378,
+    "source": "1下",
+    "english": "stinky",
+    "chinese": "臭的",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 379,
+    "source": "1下",
+    "english": "kind",
+    "chinese": "種類",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  },
+  {
+    "id": 380,
+    "source": "1下",
+    "english": "Let’s get our hands dirty!",
+    "chinese": "讓我們開始動手吧！",
+    "semester": "1下",
+    "lesson": 4,
+    "deckLabel": "1下 Lesson 4"
+  }
+];
+
+</script>
+  <script>
+
+(() => {
+  "use strict";
+  const DATA = Array.isArray(window.VOCABULARY_DATA) ? window.VOCABULARY_DATA : [];
+  const TEAM_NAMES = ["A隊", "B隊", "C隊", "D隊"];
+  const STORAGE_KEY = "bade-wordking-114-progress";
+  const state = {
+    view: "home",
+    audioUnlocked: false,
+    teacher: {
+      pool: [], order: [], index: 0, showingAnswer: false, currentDirection: "en-zh",
+      timer: null, timeLeft: 15, scores: [0, 0, 0, 0], teamCount: 2
+    },
+    student: {
+      pool: [], order: [], index: 0, showingAnswer: false, currentDirection: "en-zh", wrongOnly: false,
+      known: new Set(), unsure: new Set(), practiced: 0
+    }
+  };
+  const $ = (id) => document.getElementById(id);
+  const el = {
+    body: document.body,
+    homeButton: $("homeButton"), fullscreenButton: $("fullscreenButton"),
+    homeView: $("homeView"), teacherView: $("teacherView"), studentView: $("studentView"),
+    teacherModeButton: $("teacherModeButton"), studentModeButton: $("studentModeButton"), totalCount: $("totalCount"),
+    teacherScope: $("teacherScope"), teacherDirection: $("teacherDirection"), secondsSelect: $("secondsSelect"), teamCountSelect: $("teamCountSelect"),
+    startContestButton: $("startContestButton"), resetScoresButton: $("resetScoresButton"), teacherStage: $("teacherStage"),
+    teacherScopeBadge: $("teacherScopeBadge"), teacherProgress: $("teacherProgress"), teacherPromptLabel: $("teacherPromptLabel"),
+    teacherQuestion: $("teacherQuestion"), teacherAnswer: $("teacherAnswer"), countdown: $("countdown"), beepSound: $("beepSound"), timerPanel: $("timerPanel"),
+    scoreboard: $("scoreboard"), showTeacherAnswerButton: $("showTeacherAnswerButton"), nextTeacherButton: $("nextTeacherButton"),
+    studentScope: $("studentScope"), studentDirection: $("studentDirection"), startPracticeButton: $("startPracticeButton"), wrongOnlyButton: $("wrongOnlyButton"),
+    clearProgressButton: $("clearProgressButton"), studentTotal: $("studentTotal"), knownCount: $("knownCount"), unsureCount: $("unsureCount"),
+    studentCard: $("studentCard"), studentScopeBadge: $("studentScopeBadge"), studentProgress: $("studentProgress"), studentPromptLabel: $("studentPromptLabel"),
+    studentQuestion: $("studentQuestion"), studentAnswer: $("studentAnswer"), showStudentAnswerButton: $("showStudentAnswerButton"),
+    knownButton: $("knownButton"), unsureButton: $("unsureButton"), nextStudentButton: $("nextStudentButton"), wordList: $("wordList")
+  };
+  function shuffle(array) {
+    const result = [...array];
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  }
+  function scopeOptions() {
+    const lessons = new Map();
+    DATA.forEach(card => {
+      const key = `${card.source}|${card.lesson}`;
+      if (!lessons.has(key)) lessons.set(key, { source: card.source, lesson: card.lesson, count: 0 });
+      lessons.get(key).count += 1;
+    });
+    const opts = [{ value: "all", label: `全部單字（${DATA.length}）` }];
+    ["1上", "1下"].forEach(source => {
+      const semCount = DATA.filter(card => card.source === source).length;
+      opts.push({ value: `sem:${source}`, label: `${source} 全部（${semCount}）` });
+      [...lessons.values()]
+        .filter(item => item.source === source)
+        .sort((a, b) => a.lesson - b.lesson)
+        .forEach(item => opts.push({ value: `lesson:${item.source}:${item.lesson}`, label: `${item.source} Lesson ${item.lesson}（${item.count}）` }));
+    });
+    return opts;
+  }
+  function fillScopeSelect(select) {
+    select.innerHTML = scopeOptions().map(opt => `<option value="${opt.value}">${opt.label}</option>`).join("");
+  }
+  function labelFromScope(value) {
+    if (value === "all") return "全部單字";
+    const [type, source, lesson] = value.split(":");
+    if (type === "sem") return `${source} 全部`;
+    if (type === "lesson") return `${source} Lesson ${lesson}`;
+    return "全部單字";
+  }
+  function filterByScope(value) {
+    if (value === "all") return [...DATA];
+    const [type, source, lesson] = value.split(":");
+    if (type === "sem") return DATA.filter(card => card.source === source);
+    if (type === "lesson") return DATA.filter(card => card.source === source && String(card.lesson) === String(lesson));
+    return [...DATA];
+  }
+  function getDirection(mode) {
+    if (mode === "mixed") return Math.random() < 0.5 ? "en-zh" : "zh-en";
+    return mode;
+  }
+  function saveProgress() {
+    const payload = { known: [...state.student.known], unsure: [...state.student.unsure], practiced: state.student.practiced };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  }
+  function loadProgress() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const payload = JSON.parse(raw);
+      state.student.known = new Set(payload.known || []);
+      state.student.unsure = new Set(payload.unsure || []);
+      state.student.practiced = payload.practiced || 0;
+    } catch (error) {
+      console.warn("無法讀取練習進度", error);
+    }
+  }
+  function setView(view) {
+    state.view = view;
+    el.homeView.classList.toggle("active-view", view === "home");
+    el.teacherView.classList.toggle("active-view", view === "teacher");
+    el.studentView.classList.toggle("active-view", view === "student");
+    el.body.classList.toggle("in-mode", view !== "home");
+    if (view !== "teacher") stopTeacherTimer();
+  }
+  function unlockAudio() {
+    if (state.audioUnlocked) return;
+    state.audioUnlocked = true;
+    if (!el.beepSound) return;
+    const old = el.beepSound.volume;
+    el.beepSound.volume = 0;
+    el.beepSound.play().then(() => {
+      el.beepSound.pause(); el.beepSound.currentTime = 0; el.beepSound.volume = old;
+    }).catch(() => { el.beepSound.volume = old; });
+  }
+  function playBeep() {
+    if (el.beepSound) {
+      el.beepSound.currentTime = 0;
+      el.beepSound.volume = 1;
+      el.beepSound.play().catch(playGeneratedBeep);
+    } else playGeneratedBeep();
+  }
+  function playGeneratedBeep() {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const context = new AudioContext();
+      const osc = context.createOscillator();
+      const gain = context.createGain();
+      osc.frequency.value = 880; osc.type = "sine";
+      gain.gain.setValueAtTime(0.0001, context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.2, context.currentTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.45);
+      osc.connect(gain); gain.connect(context.destination); osc.start(); osc.stop(context.currentTime + 0.48);
+    } catch (error) { console.warn("無法播放提示音", error); }
+  }
+  function stopTeacherTimer() {
+    clearInterval(state.teacher.timer);
+    state.teacher.timer = null;
+  }
+  function setTimerClass(name, enabled) {
+    const wrap = el.timerPanel?.parentElement;
+    if (wrap) wrap.classList.toggle(name, enabled);
+  }
+  function resetTeacherTimerView() {
+    const seconds = Number(el.secondsSelect.value) || 15;
+    el.countdown.textContent = seconds;
+    setTimerClass("time-warning", false); setTimerClass("time-up", false);
+  }
+  function startTeacherTimer() {
+    stopTeacherTimer();
+    state.teacher.timeLeft = Number(el.secondsSelect.value) || 15;
+    el.countdown.textContent = state.teacher.timeLeft;
+    setTimerClass("time-warning", false); setTimerClass("time-up", false);
+    state.teacher.timer = setInterval(() => {
+      state.teacher.timeLeft -= 1;
+      el.countdown.textContent = Math.max(state.teacher.timeLeft, 0);
+      setTimerClass("time-warning", state.teacher.timeLeft <= 5 && state.teacher.timeLeft > 0);
+      if (state.teacher.timeLeft <= 0) {
+        stopTeacherTimer(); setTimerClass("time-warning", false); setTimerClass("time-up", true); playBeep();
+      }
+    }, 1000);
+  }
+  function currentTeacherCard() {
+    const t = state.teacher;
+    if (!t.pool.length || !t.order.length) return null;
+    return t.pool[t.order[t.index]];
+  }
+  function startContest() {
+    unlockAudio();
+    const t = state.teacher;
+    t.pool = filterByScope(el.teacherScope.value);
+    t.order = shuffle(t.pool.map((_, i) => i));
+    t.index = 0;
+    renderTeacherCard();
+  }
+  function renderTeacherCard() {
+    const card = currentTeacherCard();
+    el.teacherScopeBadge.textContent = labelFromScope(el.teacherScope.value);
+    if (!card) {
+      el.teacherPromptLabel.textContent = "沒有可用題目";
+      el.teacherQuestion.textContent = "請重新選擇題庫";
+      el.teacherAnswer.textContent = ""; el.teacherAnswer.classList.add("hidden");
+      el.teacherProgress.textContent = "第 0 / 0 題"; stopTeacherTimer(); resetTeacherTimerView(); return;
+    }
+    state.teacher.currentDirection = getDirection(el.teacherDirection.value);
+    const askEnglish = state.teacher.currentDirection === "en-zh";
+    el.teacherPromptLabel.textContent = askEnglish ? "請搶答中文意思" : "請搶答英文單字";
+    el.teacherQuestion.textContent = askEnglish ? card.english : card.chinese;
+    el.teacherAnswer.textContent = askEnglish ? card.chinese : card.english;
+    el.teacherAnswer.classList.add("hidden");
+    el.teacherProgress.textContent = `第 ${state.teacher.index + 1} / ${state.teacher.pool.length} 題`;
+    state.teacher.showingAnswer = false;
+    startTeacherTimer();
+  }
+  function showTeacherAnswer() {
+    if (!currentTeacherCard()) return;
+    el.teacherAnswer.classList.remove("hidden");
+    state.teacher.showingAnswer = true;
+    stopTeacherTimer(); setTimerClass("time-warning", false);
+  }
+  function nextTeacherCard() {
+    const t = state.teacher;
+    if (!t.pool.length) return;
+    t.index += 1;
+    if (t.index >= t.order.length) { t.order = shuffle(t.pool.map((_, i) => i)); t.index = 0; }
+    renderTeacherCard();
+  }
+  function teacherCardClick(event) {
+    if (event.target.closest(".no-card-click")) return;
+    unlockAudio();
+    state.teacher.showingAnswer ? nextTeacherCard() : showTeacherAnswer();
+  }
+  function renderTeams() {
+    state.teacher.teamCount = Number(el.teamCountSelect.value) || 2;
+    el.scoreboard.innerHTML = TEAM_NAMES.slice(0, state.teacher.teamCount).map((name, i) => `
+      <article class="team team-${i}">
+        <input class="team-name" value="${name}" aria-label="第 ${i + 1} 隊名稱" />
+        <div class="score" id="score-${i}">${state.teacher.scores[i]}</div>
+        <div class="team-controls">
+          <button class="minus" type="button" data-team="${i}" data-delta="-1">−</button>
+          <button class="plus" type="button" data-team="${i}" data-delta="1">＋</button>
+        </div>
+      </article>
+    `).join("");
+    el.scoreboard.querySelectorAll("[data-team]").forEach(button => {
+      button.addEventListener("click", () => adjustScore(Number(button.dataset.team), Number(button.dataset.delta)));
+    });
+  }
+  function renderScores() {
+    for (let i = 0; i < 4; i++) {
+      const score = document.getElementById(`score-${i}`);
+      if (score) score.textContent = state.teacher.scores[i];
+    }
+  }
+  function adjustScore(team, delta) {
+    if (team < 0 || team >= state.teacher.teamCount) return;
+    state.teacher.scores[team] += delta;
+    renderScores();
+  }
+  function resetScores() {
+    state.teacher.scores = [0, 0, 0, 0];
+    renderScores();
+  }
+  function currentStudentCard() {
+    const s = state.student;
+    if (!s.pool.length || !s.order.length) return null;
+    return s.pool[s.order[s.index]];
+  }
+  function buildStudentPool() {
+    const scoped = filterByScope(el.studentScope.value);
+    if (state.student.wrongOnly) return scoped.filter(card => state.student.unsure.has(card.id));
+    return scoped;
+  }
+  function startPractice() {
+    const s = state.student;
+    s.pool = buildStudentPool();
+    s.order = shuffle(s.pool.map((_, i) => i));
+    s.index = 0; s.showingAnswer = false;
+    renderStudentCard(); renderStudentStats(); renderWordList();
+  }
+  function renderStudentCard() {
+    const card = currentStudentCard();
+    el.studentScopeBadge.textContent = state.student.wrongOnly ? `${labelFromScope(el.studentScope.value)} · 錯題` : labelFromScope(el.studentScope.value);
+    if (!card) {
+      el.studentPromptLabel.textContent = state.student.wrongOnly ? "目前沒有錯題" : "沒有可用題目";
+      el.studentQuestion.textContent = state.student.wrongOnly ? "先練習並加入錯題" : "請重新選擇題庫";
+      el.studentAnswer.textContent = ""; el.studentAnswer.classList.add("hidden");
+      el.studentProgress.textContent = "第 0 / 0 題"; return;
+    }
+    state.student.currentDirection = getDirection(el.studentDirection.value);
+    const askEnglish = state.student.currentDirection === "en-zh";
+    el.studentPromptLabel.textContent = askEnglish ? "想一想：中文意思是？" : "想一想：英文怎麼說？";
+    el.studentQuestion.textContent = askEnglish ? card.english : card.chinese;
+    el.studentAnswer.textContent = askEnglish ? card.chinese : card.english;
+    el.studentAnswer.classList.add("hidden");
+    el.studentProgress.textContent = `第 ${state.student.index + 1} / ${state.student.pool.length} 題`;
+    state.student.showingAnswer = false;
+  }
+  function showStudentAnswer() {
+    if (!currentStudentCard()) return;
+    el.studentAnswer.classList.remove("hidden");
+    state.student.showingAnswer = true;
+  }
+  function nextStudentCard() {
+    const s = state.student;
+    if (!s.pool.length) return;
+    s.index += 1;
+    if (s.index >= s.order.length) { s.order = shuffle(s.pool.map((_, i) => i)); s.index = 0; }
+    renderStudentCard(); renderStudentStats();
+  }
+  function markKnown() {
+    const card = currentStudentCard(); if (!card) return;
+    state.student.known.add(card.id); state.student.unsure.delete(card.id); state.student.practiced += 1;
+    saveProgress(); nextStudentCard();
+  }
+  function markUnsure() {
+    const card = currentStudentCard(); if (!card) return;
+    state.student.unsure.add(card.id); state.student.known.delete(card.id); state.student.practiced += 1;
+    saveProgress(); nextStudentCard();
+  }
+  function renderStudentStats() {
+    el.studentTotal.textContent = state.student.pool.length;
+    el.knownCount.textContent = state.student.known.size;
+    el.unsureCount.textContent = state.student.unsure.size;
+    el.wrongOnlyButton.textContent = state.student.wrongOnly ? "回到一般練習" : "只練錯題";
+  }
+  function renderWordList() {
+    const rows = buildStudentPool();
+    el.wordList.innerHTML = rows.map(card => `<div class="word-row"><strong>${escapeHtml(card.english)}</strong><span>${escapeHtml(card.chinese)}</span></div>`).join("");
+  }
+  function escapeHtml(text) {
+    return String(text).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
+  }
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
+  function bindEvents() {
+    el.teacherModeButton.addEventListener("click", () => { setView("teacher"); startContest(); });
+    el.studentModeButton.addEventListener("click", () => { setView("student"); startPractice(); });
+    el.homeButton.addEventListener("click", () => setView("home"));
+    el.fullscreenButton.addEventListener("click", toggleFullscreen);
+    el.startContestButton.addEventListener("click", startContest);
+    el.teacherScope.addEventListener("change", startContest);
+    el.teacherDirection.addEventListener("change", renderTeacherCard);
+    el.secondsSelect.addEventListener("change", () => state.teacher.showingAnswer ? resetTeacherTimerView() : startTeacherTimer());
+    el.teamCountSelect.addEventListener("change", renderTeams);
+    el.resetScoresButton.addEventListener("click", resetScores);
+    el.teacherStage.addEventListener("click", teacherCardClick);
+    el.showTeacherAnswerButton.addEventListener("click", () => { unlockAudio(); showTeacherAnswer(); });
+    el.nextTeacherButton.addEventListener("click", () => { unlockAudio(); nextTeacherCard(); });
+    el.startPracticeButton.addEventListener("click", () => { state.student.wrongOnly = false; startPractice(); });
+    el.studentScope.addEventListener("change", () => { state.student.wrongOnly = false; startPractice(); });
+    el.studentDirection.addEventListener("change", renderStudentCard);
+    el.wrongOnlyButton.addEventListener("click", () => { state.student.wrongOnly = !state.student.wrongOnly; startPractice(); });
+    el.clearProgressButton.addEventListener("click", () => {
+      if (!confirm("確定要清除這台裝置上的練習進度與錯題嗎？")) return;
+      state.student.known.clear(); state.student.unsure.clear(); state.student.practiced = 0; saveProgress(); startPractice();
+    });
+    el.showStudentAnswerButton.addEventListener("click", showStudentAnswer);
+    el.nextStudentButton.addEventListener("click", nextStudentCard);
+    el.knownButton.addEventListener("click", markKnown);
+    el.unsureButton.addEventListener("click", markUnsure);
+    document.addEventListener("click", unlockAudio, { once: true });
+    document.addEventListener("keydown", event => {
+      const active = document.activeElement;
+      const isTyping = active && ["INPUT", "SELECT", "TEXTAREA"].includes(active.tagName);
+      if (isTyping) return;
+      const key = event.key.toLowerCase();
+      if (key === "f") toggleFullscreen();
+      if (state.view === "teacher") {
+        if (event.code === "Space") { event.preventDefault(); unlockAudio(); state.teacher.showingAnswer ? nextTeacherCard() : showTeacherAnswer(); }
+        else if (key === "n") nextTeacherCard();
+        else if (key === "s") startContest();
+        else if (["1", "2", "3", "4"].includes(key)) adjustScore(Number(key) - 1, 1);
+        else if (["z", "x", "c", "v"].includes(key)) adjustScore({z:0,x:1,c:2,v:3}[key], -1);
+      } else if (state.view === "student") {
+        if (event.code === "Space") { event.preventDefault(); state.student.showingAnswer ? nextStudentCard() : showStudentAnswer(); }
+        else if (key === "enter") markKnown();
+        else if (key === "u") markUnsure();
+        else if (key === "n") nextStudentCard();
+      }
+    });
+  }
+  function initPwa() {
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
+  }
+  function init() {
+    el.totalCount.textContent = DATA.length;
+    fillScopeSelect(el.teacherScope); fillScopeSelect(el.studentScope);
+    loadProgress(); bindEvents(); renderTeams(); resetTeacherTimerView(); renderStudentStats(); setView("home"); initPwa();
+  }
+  init();
+})();
+
+</script>
+</body>
+</html>
